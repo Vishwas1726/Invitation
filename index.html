@@ -1648,14 +1648,31 @@
     // Personalise the couple names, photo, venue and music after details are verified.
     const WEDDING_DATE = '2026-12-03T19:00:00+05:30';
     const MAPS_QUERY = 'Dreamland Party Plot, Rajkot'; // Add exact venue name and address when confirmed.
-    const MUSIC_URL = ''; // Optional direct MP3 URL; music never autoplays.
+    const MUSIC_URL = 'Song.mp3'; // Optional direct MP3 URL; music never autoplays.
     const INVITE = { // Edit these details; the invitation screen updates automatically.
       brideFamily: '', brideName: '', brideParents: '', groomName: '', groomParents: ''
     };
     document.querySelectorAll('[data-f]').forEach(el => { const v = INVITE[el.dataset.f]; if (v && v.trim()) el.textContent = v; });
     const scene = document.getElementById('invitation');
     const cover = document.getElementById('cover');
-    document.getElementById('openInvitation').addEventListener('click', () => { cover.classList.add('opened'); window.scrollTo(0, 0); scene.classList.add('play'); document.body.classList.remove('locked'); setTimeout(() => cover.remove(), 900); });
+    document.getElementById('openInvitation').addEventListener('click', async () => {
+      cover.classList.add('opened');
+      window.scrollTo(0, 0);
+      scene.classList.add('play');
+      document.body.classList.remove('locked');
+      setTimeout(() => cover.remove(), 900);
+
+      // Start music when the visitor opens the invitation.
+      if (MUSIC_URL.trim()) {
+        try {
+          await music.play();
+          musicToggle.textContent = 'Ⅱ';
+          musicNote.textContent = 'Music on';
+        } catch (e) {
+          musicNote.textContent = 'Tap to play music';
+        }
+      }
+    });
     const mapLink = document.getElementById('mapLink');
     if (MAPS_QUERY.trim()) mapLink.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(MAPS_QUERY);
     const music = document.getElementById('weddingMusic'), musicToggle = document.getElementById('musicToggle'), musicNote = document.getElementById('musicNote');
